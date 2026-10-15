@@ -117,7 +117,7 @@ main{padding-top:22px;}
 @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 h2.paso-titulo{font-size:16px;margin:0 0 4px;font-weight:700;color:var(--teal-dk);}
 p.paso-sub{margin:0 0 16px;color:var(--tx2);font-size:13px;}
-fieldset{border:none;margin:0 0 18px;padding:0;}
+fieldset{border:none;margin:0 0 18px;padding:0;min-width:0;}
 fieldset legend{font-size:13px;font-weight:700;color:var(--tx1);margin-bottom:8px;padding:0;text-transform:uppercase;letter-spacing:.3px;}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
@@ -172,10 +172,15 @@ button{
 .btn-secundario:hover{background:var(--bg3);}
 .btn-chico{padding:6px 12px;font-size:13px;}
 .btn-peligro{background:var(--red-lt);color:var(--red);border-color:var(--red);}
-table.tabla-din{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:13px;}
-table.tabla-din th{text-align:left;font-size:11px;color:var(--tx2);text-transform:uppercase;padding:4px 6px;border-bottom:1px solid var(--bd2);}
-table.tabla-din td{padding:4px 6px;border-bottom:1px solid var(--bd1);}
-table.tabla-din input{width:100%;padding:6px 7px;border:1px solid var(--bd1);border-radius:6px;font-size:13px;font-family:var(--font);}
+.tabla-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 10px;border-radius:6px;width:100%;min-width:0;}
+.tabla-scroll::after{content:"";}
+table.tabla-din{width:100%;border-collapse:collapse;margin-bottom:0;font-size:13px;}
+table.tabla-din th{text-align:left;font-size:11px;color:var(--tx2);text-transform:uppercase;padding:4px 8px;border-bottom:1px solid var(--bd2);white-space:nowrap;}
+table.tabla-din td{padding:4px 4px;border-bottom:1px solid var(--bd1);min-width:112px;}
+table.tabla-din td:last-child,table.tabla-din th:last-child{min-width:34px;}
+table.tabla-din input{width:100%;min-width:100px;box-sizing:border-box;padding:8px 9px;border:1px solid var(--bd1);border-radius:6px;font-size:14px;font-family:var(--font);}
+.tabla-scroll-aviso{font-size:11.5px;color:var(--tx2);margin:-4px 0 6px;display:none;}
+@media (max-width:640px){.tabla-scroll-aviso{display:block;}}
 .fila-borrar{background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;padding:2px 6px;}
 .legal-box{
   max-height:260px;overflow-y:auto;
@@ -643,20 +648,20 @@ canvas#firma-canvas{
 <section class="step" data-step="5">
   <div class="card">
     <h2 class="paso-titulo">5. Información financiera</h2>
-    <p class="paso-sub">Ingresos y egresos mensuales, y su patrimonio aproximado. Use solo números, sin puntos ni símbolos.</p>
+    <p class="paso-sub">Ingresos y egresos mensuales, y su patrimonio aproximado. Escriba solo el número; los puntos de miles se ponen solos.</p>
 
     <fieldset>
       <legend>Ingresos mensuales</legend>
       <div class="grid2">
-        <div class="campo"><label>Sueldo básico</label><input type="number" id="f_ing_sueldo" min="0" oninput="calcularTotales()"></div>
-        <div class="campo"><label>Honorarios / servicios</label><input type="number" id="f_ing_honorarios" min="0" oninput="calcularTotales()"></div>
+        <div class="campo"><label>Sueldo básico</label><input type="text" inputmode="numeric" id="f_ing_sueldo" oninput="formatearInputDinero(this); calcularTotales();"></div>
+        <div class="campo"><label>Honorarios / servicios</label><input type="text" inputmode="numeric" id="f_ing_honorarios" oninput="formatearInputDinero(this); calcularTotales();"></div>
       </div>
       <div class="grid2">
-        <div class="campo"><label>Arrendamientos</label><input type="number" id="f_ing_arrendamientos" min="0" oninput="calcularTotales()"></div>
-        <div class="campo"><label>Producido del vehículo</label><input type="number" id="f_ing_vehiculo" min="0" oninput="calcularTotales()"></div>
+        <div class="campo"><label>Arrendamientos</label><input type="text" inputmode="numeric" id="f_ing_arrendamientos" oninput="formatearInputDinero(this); calcularTotales();"></div>
+        <div class="campo"><label>Producido del vehículo</label><input type="text" inputmode="numeric" id="f_ing_vehiculo" oninput="formatearInputDinero(this); calcularTotales();"></div>
       </div>
       <div class="grid2">
-        <div class="campo"><label>Otros ingresos</label><input type="number" id="f_ing_otros" min="0" oninput="calcularTotales()"></div>
+        <div class="campo"><label>Otros ingresos</label><input type="text" inputmode="numeric" id="f_ing_otros" oninput="formatearInputDinero(this); calcularTotales();"></div>
         <div class="campo"><label>Descripción de otros ingresos</label><input type="text" id="f_ing_otros_desc"></div>
       </div>
       <div class="campo">
@@ -668,19 +673,19 @@ canvas#firma-canvas{
     <fieldset>
       <legend>Egresos mensuales</legend>
       <div class="grid2">
-        <div class="campo"><label>Arriendo + administración</label><input type="number" id="f_egr_arriendo" min="0" oninput="calcularTotales()"></div>
-        <div class="campo"><label>Cuotas de vehículos</label><input type="number" id="f_egr_cuotas_vehiculo" min="0" oninput="calcularTotales()"></div>
+        <div class="campo"><label>Arriendo + administración</label><input type="text" inputmode="numeric" id="f_egr_arriendo" oninput="formatearInputDinero(this); calcularTotales();"></div>
+        <div class="campo"><label>Cuotas de vehículos</label><input type="text" inputmode="numeric" id="f_egr_cuotas_vehiculo" oninput="formatearInputDinero(this); calcularTotales();"></div>
       </div>
       <div class="grid2">
-        <div class="campo"><label>Tarjeta de crédito</label><input type="number" id="f_egr_tarjeta" min="0" oninput="calcularTotales()"></div>
-        <div class="campo"><label>Cuota hipotecaria</label><input type="number" id="f_egr_hipoteca" min="0" oninput="calcularTotales()"></div>
+        <div class="campo"><label>Tarjeta de crédito</label><input type="text" inputmode="numeric" id="f_egr_tarjeta" oninput="formatearInputDinero(this); calcularTotales();"></div>
+        <div class="campo"><label>Cuota hipotecaria</label><input type="text" inputmode="numeric" id="f_egr_hipoteca" oninput="formatearInputDinero(this); calcularTotales();"></div>
       </div>
       <div class="grid2">
-        <div class="campo"><label>Gastos familiares</label><input type="number" id="f_egr_familiares" min="0" oninput="calcularTotales()"></div>
-        <div class="campo"><label>Gastos de taxi al mes</label><input type="number" id="f_egr_taxi" min="0" oninput="calcularTotales()"></div>
+        <div class="campo"><label>Gastos familiares</label><input type="text" inputmode="numeric" id="f_egr_familiares" oninput="formatearInputDinero(this); calcularTotales();"></div>
+        <div class="campo"><label>Gastos de taxi al mes</label><input type="text" inputmode="numeric" id="f_egr_taxi" oninput="formatearInputDinero(this); calcularTotales();"></div>
       </div>
       <div class="grid2">
-        <div class="campo"><label>Otros egresos</label><input type="number" id="f_egr_otros" min="0" oninput="calcularTotales()"></div>
+        <div class="campo"><label>Otros egresos</label><input type="text" inputmode="numeric" id="f_egr_otros" oninput="formatearInputDinero(this); calcularTotales();"></div>
         <div class="campo"><label>Descripción de otros egresos</label><input type="text" id="f_egr_otros_desc"></div>
       </div>
       <div class="campo">
@@ -692,9 +697,9 @@ canvas#firma-canvas{
     <fieldset>
       <legend>Patrimonio</legend>
       <div class="grid3">
-        <div class="campo"><label>Total activos</label><input type="number" id="f_total_activos" min="0"></div>
-        <div class="campo"><label>Total pasivos</label><input type="number" id="f_total_pasivos" min="0"></div>
-        <div class="campo"><label>Total patrimonio</label><input type="number" id="f_total_patrimonio" min="0"></div>
+        <div class="campo"><label>Total activos</label><input type="text" inputmode="numeric" id="f_total_activos" oninput="formatearInputDinero(this)"></div>
+        <div class="campo"><label>Total pasivos</label><input type="text" inputmode="numeric" id="f_total_pasivos" oninput="formatearInputDinero(this)"></div>
+        <div class="campo"><label>Total patrimonio</label><input type="text" inputmode="numeric" id="f_total_patrimonio" oninput="formatearInputDinero(this)"></div>
       </div>
     </fieldset>
   </div>
@@ -732,26 +737,32 @@ canvas#firma-canvas{
         <div class="grid3">
           <div class="campo"><label>País</label><input type="text" id="f_intl_prod_pais"></div>
           <div class="campo"><label>Moneda</label><input type="text" id="f_intl_prod_moneda"></div>
-          <div class="campo"><label>Monto</label><input type="number" id="f_intl_prod_monto" min="0"></div>
+          <div class="campo"><label>Monto</label><input type="text" inputmode="numeric" id="f_intl_prod_monto" oninput="formatearInputDinero(this)"></div>
         </div>
       </div>
     </fieldset>
 
     <fieldset>
       <legend>Finca raíz</legend>
+      <p class="tabla-scroll-aviso">← Deslice la tabla hacia los lados para ver todas las columnas →</p>
+      <div class="tabla-scroll">
       <table class="tabla-din" id="tabla-finca">
         <thead><tr><th>Tipo inmueble</th><th>Dirección</th><th>Ciudad</th><th>Valor comercial</th><th>Saldo hipoteca</th><th>Hipotecado a</th><th></th></tr></thead>
         <tbody id="tabla-finca-body"></tbody>
       </table>
+      </div>
       <button type="button" class="btn-secundario btn-chico" onclick="agregarFilaFinca()">+ Agregar inmueble</button>
     </fieldset>
 
     <fieldset>
       <legend>Otros vehículos (además del que está financiando)</legend>
+      <p class="tabla-scroll-aviso">← Deslice la tabla hacia los lados para ver todas las columnas →</p>
+      <div class="tabla-scroll">
       <table class="tabla-din" id="tabla-vehiculos">
         <thead><tr><th>Clase</th><th>Marca</th><th>Modelo</th><th>Placa</th><th>Valor</th><th>Pignorado a</th><th>Saldo</th><th></th></tr></thead>
         <tbody id="tabla-vehiculos-body"></tbody>
       </table>
+      </div>
       <button type="button" class="btn-secundario btn-chico" onclick="agregarFilaVehiculo()">+ Agregar vehículo</button>
     </fieldset>
   </div>
@@ -766,32 +777,41 @@ canvas#firma-canvas{
 <section class="step" data-step="7">
   <div class="card">
     <h2 class="paso-titulo">7. Referencias</h2>
-    <p class="paso-sub">Agregue mínimo dos referencias personales y dos familiares, con nombre y teléfono (para poder verificarlas).</p>
+    <p class="paso-sub">Agregue mínimo dos referencias personales y dos familiares, con todos sus datos completos (para poder verificarlas).</p>
 
     <fieldset>
       <legend>Referencias comerciales</legend>
+      <p class="tabla-scroll-aviso">← Deslice la tabla hacia los lados para ver todas las columnas →</p>
+      <div class="tabla-scroll">
       <table class="tabla-din" id="tabla-ref-comercial">
         <thead><tr><th>Nombre / razón social</th><th>Teléfono</th><th>Monto crédito</th><th>Antigüedad relación</th><th></th></tr></thead>
         <tbody id="tabla-ref-comercial-body"></tbody>
       </table>
+      </div>
       <button type="button" class="btn-secundario btn-chico" onclick="agregarFilaRefComercial()">+ Agregar referencia comercial</button>
     </fieldset>
 
     <fieldset>
       <legend>Referencias personales <span class="req">*</span> (mínimo 2)</legend>
+      <p class="tabla-scroll-aviso">← Deslice la tabla hacia los lados para ver todas las columnas →</p>
+      <div class="tabla-scroll">
       <table class="tabla-din" id="tabla-ref-personal">
         <thead><tr><th>Nombre</th><th>Dirección</th><th>Teléfono</th><th>Ciudad</th><th>Tiempo de conocerlo</th><th></th></tr></thead>
         <tbody id="tabla-ref-personal-body"></tbody>
       </table>
+      </div>
       <button type="button" class="btn-secundario btn-chico" onclick="agregarFilaRefPersonal()">+ Agregar referencia personal</button>
     </fieldset>
 
     <fieldset>
       <legend>Referencias familiares <span class="req">*</span> (mínimo 2)</legend>
+      <p class="tabla-scroll-aviso">← Deslice la tabla hacia los lados para ver todas las columnas →</p>
+      <div class="tabla-scroll">
       <table class="tabla-din" id="tabla-ref-familiar">
         <thead><tr><th>Nombre</th><th>Dirección</th><th>Teléfono</th><th>Ciudad</th><th>Parentesco</th><th>Tiempo de conocerlo</th><th></th></tr></thead>
         <tbody id="tabla-ref-familiar-body"></tbody>
       </table>
+      </div>
       <button type="button" class="btn-secundario btn-chico" onclick="agregarFilaRefFamiliar()">+ Agregar referencia familiar</button>
     </fieldset>
   </div>
@@ -1116,15 +1136,19 @@ function validarPasoActual() {
     if (!tipo) errores.push('Tipo de actividad laboral');
   } else if (pasoActual === 5) {
     const ingresoTotal = ['f_ing_sueldo','f_ing_honorarios','f_ing_arrendamientos','f_ing_vehiculo','f_ing_otros']
-      .reduce((s, id) => s + (parseFloat(val(id)) || 0), 0);
+      .reduce((s, id) => s + numDinero(id), 0);
     if (ingresoTotal <= 0) errores.push('Al menos un ingreso mensual (sueldo, honorarios, arrendamientos, producido del vehículo, u otros)');
   } else if (pasoActual === 7) {
-    const refsPersonal = leerTabla('tabla-ref-personal-body', ['nombre','direccion','telefono','ciudad','tiempo_conocido']);
-    const refsFamiliar = leerTabla('tabla-ref-familiar-body', ['nombre','direccion','telefono','ciudad','parentesco','tiempo_conocido']);
-    const completaPersonal = refsPersonal.filter(r => r.nombre && r.telefono);
-    const completaFamiliar = refsFamiliar.filter(r => r.nombre && r.telefono);
-    if (completaPersonal.length < 2) errores.push('Mínimo 2 referencias personales con nombre y teléfono');
-    if (completaFamiliar.length < 2) errores.push('Mínimo 2 referencias familiares con nombre y teléfono');
+    // v132: antes solo se exigía nombre y teléfono; ahora se exigen TODOS los datos
+    // de cada referencia (mínimo 2 personales y 2 familiares), a pedido de Mateo.
+    const camposPersonal = ['nombre','direccion','telefono','ciudad','tiempo_conocido'];
+    const camposFamiliar = ['nombre','direccion','telefono','ciudad','parentesco','tiempo_conocido'];
+    const refsPersonal = leerTabla('tabla-ref-personal-body', camposPersonal);
+    const refsFamiliar = leerTabla('tabla-ref-familiar-body', camposFamiliar);
+    const completaPersonal = refsPersonal.filter(r => camposPersonal.every(c => r[c]));
+    const completaFamiliar = refsFamiliar.filter(r => camposFamiliar.every(c => r[c]));
+    if (completaPersonal.length < 2) errores.push('Mínimo 2 referencias personales con todos sus datos completos (nombre, dirección, teléfono, ciudad y tiempo de conocerlo)');
+    if (completaFamiliar.length < 2) errores.push('Mínimo 2 referencias familiares con todos sus datos completos (nombre, dirección, teléfono, ciudad, parentesco y tiempo de conocerlo)');
   } else if (pasoActual === 8) {
     if (!val('f_origen_fondos')) errores.push('Fuentes de los recursos (numeral 3)');
     if (!document.getElementById('f_acepta_origen_fondos').checked) errores.push('Aceptar la declaración de origen de fondos');
@@ -1175,6 +1199,17 @@ function irAnterior() {
 }
 
 function val(id) { const el = document.getElementById(id); return el ? (el.value || '').trim() : ''; }
+
+/* ---------------------- formato de dinero en vivo (puntos de miles) ---------------------- */
+function soloDigitos(str) { return (str || '').toString().replace(/\D/g, ''); }
+function formatearInputDinero(input) {
+  const digits = soloDigitos(input.value).replace(/^0+(?=\d)/, '');
+  if (!digits) { input.value = ''; return; }
+  input.value = parseInt(digits, 10).toLocaleString('es-CO');
+}
+// valor crudo (solo dígitos) de un campo de dinero, para cálculos y para el envío
+function valDinero(id) { const el = document.getElementById(id); return el ? soloDigitos(el.value) : ''; }
+function numDinero(id) { return parseInt(valDinero(id) || '0', 10) || 0; }
 function mostrarToast(msg, ms) {
   const existentes = document.querySelectorAll('.toast.temporal');
   existentes.forEach(e => e.remove());
@@ -1215,9 +1250,9 @@ function actualizarVisibilidadLaboral() {
 /* ---------------------- paso 5: totales automáticos ---------------------- */
 function calcularTotales() {
   const ing = ['f_ing_sueldo','f_ing_honorarios','f_ing_arrendamientos','f_ing_vehiculo','f_ing_otros']
-    .reduce((s, id) => s + (parseFloat(val(id)) || 0), 0);
+    .reduce((s, id) => s + numDinero(id), 0);
   const egr = ['f_egr_arriendo','f_egr_cuotas_vehiculo','f_egr_tarjeta','f_egr_hipoteca','f_egr_familiares','f_egr_taxi','f_egr_otros']
-    .reduce((s, id) => s + (parseFloat(val(id)) || 0), 0);
+    .reduce((s, id) => s + numDinero(id), 0);
   document.getElementById('f_ing_total').value = formatoPesos(ing);
   document.getElementById('f_egr_total').value = formatoPesos(egr);
 }
@@ -1234,6 +1269,8 @@ function actualizarVisibilidadIntl() {
 }
 
 /* ---------------------- tablas dinámicas (finca raíz, vehículos, referencias) ---------------------- */
+// columnas de dinero en las tablas: llevan formato de miles en vivo (puntos) igual que el paso 5
+const CAMPOS_DINERO_TABLA = ['valor', 'saldo_hipoteca', 'saldo', 'monto'];
 function filaConCampos(campos, onBorrar) {
   const tr = document.createElement('tr');
   campos.forEach(nombreClase => {
@@ -1241,6 +1278,10 @@ function filaConCampos(campos, onBorrar) {
     const inp = document.createElement('input');
     inp.type = 'text';
     inp.className = 'din-' + nombreClase;
+    if (CAMPOS_DINERO_TABLA.includes(nombreClase)) {
+      inp.setAttribute('inputmode', 'numeric');
+      inp.addEventListener('input', function () { formatearInputDinero(inp); });
+    }
     td.appendChild(inp);
     tr.appendChild(td);
   });
@@ -1279,7 +1320,8 @@ function leerTabla(bodyId, campos) {
     let tieneDatos = false;
     campos.forEach(c => {
       const inp = tr.querySelector('.din-' + c);
-      const v = inp ? inp.value.trim() : '';
+      let v = inp ? inp.value.trim() : '';
+      if (CAMPOS_DINERO_TABLA.includes(c)) v = soloDigitos(v); // se guarda el número crudo, sin los puntos de formato
       fila[c] = v;
       if (v) tieneDatos = true;
     });
@@ -1413,14 +1455,14 @@ function recopilarDatos() {
       independiente: { actividad: val('f_indep_actividad'), ocupacion: val('f_indep_ocupacion'), anos_exp: val('f_indep_anos_exp'), direccion: val('f_indep_direccion'), ciudad: val('f_indep_ciudad'), telefono: val('f_indep_telefono') }
     },
     financiera: {
-      ingresos: { sueldo: val('f_ing_sueldo'), honorarios: val('f_ing_honorarios'), arrendamientos: val('f_ing_arrendamientos'), vehiculo: val('f_ing_vehiculo'), otros: val('f_ing_otros'), otros_desc: val('f_ing_otros_desc'), total: val('f_ing_total') },
-      egresos: { arriendo: val('f_egr_arriendo'), cuotas_vehiculo: val('f_egr_cuotas_vehiculo'), tarjeta: val('f_egr_tarjeta'), hipoteca: val('f_egr_hipoteca'), familiares: val('f_egr_familiares'), taxi: val('f_egr_taxi'), otros: val('f_egr_otros'), otros_desc: val('f_egr_otros_desc'), total: val('f_egr_total') },
-      total_activos: val('f_total_activos'), total_pasivos: val('f_total_pasivos'), total_patrimonio: val('f_total_patrimonio')
+      ingresos: { sueldo: valDinero('f_ing_sueldo'), honorarios: valDinero('f_ing_honorarios'), arrendamientos: valDinero('f_ing_arrendamientos'), vehiculo: valDinero('f_ing_vehiculo'), otros: valDinero('f_ing_otros'), otros_desc: val('f_ing_otros_desc'), total: val('f_ing_total') },
+      egresos: { arriendo: valDinero('f_egr_arriendo'), cuotas_vehiculo: valDinero('f_egr_cuotas_vehiculo'), tarjeta: valDinero('f_egr_tarjeta'), hipoteca: valDinero('f_egr_hipoteca'), familiares: valDinero('f_egr_familiares'), taxi: valDinero('f_egr_taxi'), otros: valDinero('f_egr_otros'), otros_desc: val('f_egr_otros_desc'), total: val('f_egr_total') },
+      total_activos: valDinero('f_total_activos'), total_pasivos: valDinero('f_total_pasivos'), total_patrimonio: valDinero('f_total_patrimonio')
     },
     internacional: {
       realiza: radio('f_intl_realiza'), tipo: val('f_intl_tipo'), posee_productos: radio('f_intl_productos'),
       producto_tipo: val('f_intl_prod_tipo'), producto_entidad: val('f_intl_prod_entidad'),
-      producto_pais: val('f_intl_prod_pais'), producto_moneda: val('f_intl_prod_moneda'), producto_monto: val('f_intl_prod_monto')
+      producto_pais: val('f_intl_prod_pais'), producto_moneda: val('f_intl_prod_moneda'), producto_monto: valDinero('f_intl_prod_monto')
     },
     finca_raiz: leerTabla('tabla-finca-body', ['tipo','direccion','ciudad','valor','saldo_hipoteca','hipotecado_a']),
     vehiculos_otros: leerTabla('tabla-vehiculos-body', ['clase','marca','modelo','placa','valor','pignorado_a','saldo']),
